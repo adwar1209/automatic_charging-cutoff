@@ -29,7 +29,7 @@ The exact ESP32 board, relay input compatibility, pin connections, and supported
 
 ## Functional diagram
 
-```
+```mermaid
 flowchart TD
     A["5 V adapter"] -->|"Charging supply"| R["Relay contacts"]
     R -->|"Switched supply"| P["Android phone"]
