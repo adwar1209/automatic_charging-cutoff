@@ -1,0 +1,6 @@
+Host test run (UTC): 2026-10-09T17:54:01.568751+00:00
+Command: python3 tools/test_host.py
+PASS: cutoff core (10853 assertions, including 10000 malformed packets)
+PASS: Java wire golden vectors and malformed status rejection
+PASS: Java commands -> C controller -> Java status (cutoff and restart latch)
+Host validation passed. BLE radio, Android lifecycle, and physical relay remain hardware tests.

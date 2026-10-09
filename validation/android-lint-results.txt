@@ -1,0 +1,101 @@
+$PROJECT/android-app/app/src/main/AndroidManifest.xml:7: Warning: Attribute usesPermissionFlags is only used in API level 31 and higher (current min is 26) [UnusedAttribute]
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
+                                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedAttribute":
+   This check finds attributes set in XML files that were introduced in a
+   version newer than the oldest version targeted by your application (with
+   the minSdkVersion attribute).
+
+   This is not an error; the application will simply ignore the attribute.
+   However, if the attribute is important to the appearance or functionality
+   of your application, you should consider finding an alternative way to
+   achieve the same result with only available attributes, and then you can
+   optionally create a copy of the layout in a layout-vNN folder which will be
+   used on API NN or higher where you can take advantage of the newer
+   attribute.
+
+   Note: This check does not only apply to attributes. For example, some tags
+   can be unused too, such as the new <tag> element in layouts introduced in
+   API 21.
+
+$PROJECT/android-app/app/src/main/AndroidManifest.xml:15: Warning: The attribute android:allowBackup is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute android:dataExtractionRules specifying an @xml resource which configures cloud backups and device transfers on Android 12 and higher. [DataExtractionRules]
+        android:allowBackup="false"
+                             ~~~~~
+
+   Explanation for issues of type "DataExtractionRules":
+   Before Android 12, the attributes android:allowBackup and
+   android:fullBackupContent were used to configure all forms of backup,
+   including cloud backups, device-to-device transfers and adb backup.
+
+   In Android 12 and higher, these attributes have been deprecated and will
+   only apply to cloud backups. You should instead use the attribute
+   android:dataExtractionRules, specifying an @xml resource that configures
+   which files to back up, for cloud backups and for device-to-device
+   transfers, separately. If your minSdkVersion supports older versions,
+   you'll still want to specify an android:fullBackupContent resource if the
+   default behavior is not right for your app.
+
+   https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   https://goo.gle/DataExtractionRules
+
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:52: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                        text = "${result.scanRecord?.deviceName ?: "ChargeCutoff"}\n${device.address}"
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:55: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+                            deviceName.text = "Selected: ${device.address}"
+                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:55: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+                            deviceName.text = "Selected: ${device.address}"
+                                               ~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:64: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+            runOnUiThread { stopScan(); status.text = "Scan failed ($errorCode). Try again." }
+                                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:64: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            runOnUiThread { stopScan(); status.text = "Scan failed ($errorCode). Try again." }
+                                                       ~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:64: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            runOnUiThread { stopScan(); status.text = "Scan failed ($errorCode). Try again." }
+                                                                              ~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:115: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        battery.text = "${state.percent ?: BatteryReader.read(this) ?: "—"}%"
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:147: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            else status.text = "Bluetooth permissions are needed to find and connect to the controller."
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:152: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        if (adapter == null) { status.text = "This phone has no Bluetooth adapter."; return }
+                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:155: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            status.text = "Enable Bluetooth, then tap Find controller again."
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:165: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+            status.text = "Searching for 10 seconds… On Android 8–11, also enable Location services."
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:167: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        } catch (e: Exception) { stopScan(); status.text = "Cannot scan: ${e.message}" }
+                                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:167: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        } catch (e: Exception) { stopScan(); status.text = "Cannot scan: ${e.message}" }
+                                                            ~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:187: Warning: Do not concatenate text displayed with setText. Use resource string with placeholders. [SetTextI18n]
+        } catch (e: Exception) { status.text = "Cannot start reporting: ${e.message}" }
+                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$PROJECT/android-app/app/src/main/java/com/adwar/chargingcutoff/MainActivity.kt:187: Warning: String literal in setText can not be translated. Use Android resources instead. [SetTextI18n]
+        } catch (e: Exception) { status.text = "Cannot start reporting: ${e.message}" }
+                                                ~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SetTextI18n":
+   When calling TextView#setText
+   * Never call Number#toString() to format numbers; it will not handle
+   fraction separators and locale-specific digits properly. Consider using
+   String#format with proper format specifications (%d or %f) instead.
+   * Do not pass a string literal (e.g. "Hello") to display text. Hardcoded
+   text can not be properly translated to other languages. Consider using
+   Android resource strings instead.
+   * Do not build messages by concatenating text chunks. Such messages can not
+   be properly translated.
+
+   https://developer.android.com/guide/topics/resources/localization.html
+
+0 errors, 17 warnings

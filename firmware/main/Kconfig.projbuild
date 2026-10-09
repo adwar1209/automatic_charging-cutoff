@@ -1,0 +1,20 @@
+menu "Charging cutoff"
+    config CUTOFF_RELAY_GPIO
+        int "Relay control GPIO (-1 disables the physical output)"
+        range -1 48
+        default -1
+        help
+            Select an output-capable, non-strapping GPIO suitable for your board.
+            The default -1 runs the complete BLE/session logic without driving a
+            physical pin. Set the actual pin before testing a relay.
+    config CUTOFF_RELAY_ACTIVE_LOW
+        bool "Relay module input is active-low"
+        default y
+        help
+            Confirm the actual module polarity and 3.3 V input compatibility.
+            Use an external bias so reset/high-impedance means relay OFF.
+    config CUTOFF_REPORT_TIMEOUT_MS
+        int "Battery report timeout (milliseconds)"
+        range 60000 600000
+        default 90000
+endmenu
