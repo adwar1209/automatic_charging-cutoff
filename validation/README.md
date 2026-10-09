@@ -10,13 +10,15 @@ charging product.
 | Java command codec / malformed status rejection | PASS on host JVM |
 | Real Java commands through C controller, decoded by Java | PASS; 99% ON, 100% OFF, restart rejected |
 | Android APK and lint | PASS: debug APK assembled, lint 0 errors / 17 warnings; no device execution claimed |
-| ESP-IDF ESP32 target | Not yet verified; local dependency setup incomplete |
+| ESP-IDF ESP32 target | PASS in GitHub Actions with ESP-IDF 5.4.2 and default GPIO -1; compilation only |
 | BLE pairing/radio and Android lifecycle | NOT RUN on a phone/ESP32 |
 | Relay wiring, current interruption and reset behavior | NOT RUN on hardware |
 | Screen-locked operation and phone energy use | NOT MEASURED |
 
 [host-test-results.txt](host-test-results.txt) and
-[android-build-results.txt](android-build-results.txt) contain the actual results.
+[android-build-results.txt](android-build-results.txt) contain the local results.
+[esp32-build-results.txt](esp32-build-results.txt) records the successful target build
+and its source commit. Physical GPIO configurations and hardware operation remain untested.
 The 17 lint warnings concern English-only UI text and manifest compatibility/backup
 configuration. See [android-lint-results.txt](android-lint-results.txt) for the findings.
 The tests exercise startup, 0/99/100%, manual stop, disconnect, timeout boundaries,

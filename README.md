@@ -2,8 +2,9 @@
 
 An ESP32-based controller that disconnects a mobile phone's 5 V charging supply when an Android app reports that its battery has reached 100%.
 
-**Status:** Android app and ESP-IDF firmware source are included. Host tests and the Android debug build/lint pass;
-ESP32 target-build and phone/BLE/relay hardware validation are pending. See [validation](validation/README.md)
+**Status:** Android app and ESP-IDF firmware source are included. Host tests, the Android
+debug build/lint, and the ESP32 default-configuration build pass. Phone/BLE/relay
+hardware validation is pending. See [validation](validation/README.md)
 for the build evidence and remaining checks.
 
 Project behavior
