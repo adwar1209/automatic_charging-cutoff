@@ -1,84 +1,84 @@
-# Automatic Charging Cutoff
+# Android-Reported Mobile Charging Cutoff
 
-A starting point for developing and validating a controller that stops battery
-charging when a defined charge-completion condition or fault is detected.
+An ESP32-based controller that disconnects a mobile phone's 5 V charging supply when an Android app reports that its battery has reached 100%.
 
-The diagram and behavior below describe a **proposed design**, not an
-implemented or tested system.
+**This** describes the proposed Android-reporting version.
 
-## Hardware scope and open decisions
+Proposed first version
 
-The proposed scope is a low-voltage DC charging-cutoff prototype. A suitable
-charger would provide the battery-specific charging profile; this project would
-supervise whether charging is enabled. It is not a complete charger or battery
-management system.
+- An Android app reads the phone-reported battery percentage.
+- The app sends that percentage to the ESP32 over Bluetooth Low Energy (BLE).
+- The ESP32 controls a 5 V relay module to connect or disconnect the phone's supply.
+- The INA219 is optional for monitoring current; it does not decide the cutoff.
+- Communication is local, with no cloud service or internet connection required.
 
-| Item | Decision still needed |
+The percentage is the phone's own state-of-charge estimate. The phone's internal charging electronics continue to manage its battery.
+
+## Hardware and software
+
+| Part | Role |
 | --- | --- |
-| Battery | Chemistry, cell count, capacity, and manufacturer limits |
-| Charger / supply | Compatible charging profile and voltage/current ratings |
-| Measurements | Which voltage, current, and/or temperature signals are required |
-| Decision logic | Analog circuit, microcontroller, or a combination |
-| Cutoff stage | Charger-enable control or a suitably rated disconnect circuit |
-| Settings | Completion criterion, fault limits, timing, and restart policy |
+| Android phone and app | Read and report battery percentage |
+| BLE-capable ESP32 board | Receive reports and control the relay |
+| 5 V adapter | Provide the charging supply |
+| 5 V relay module | Switch the phone's charging supply |
+| Kotlin / Android Studio, proposed | Develop the Android app |
+| ESP-IDF, proposed | Develop the ESP32 firmware |
 
-No board, sensor, relay, MOSFET, pin assignment, or numeric threshold is selected
-by this foundation. Firmware is a reserved area if the design needs it.
+The exact ESP32 board, relay input compatibility, pin connections, and supported Android versions still need to be documented.
 
-## Conceptual block diagram
+## Functional diagram
 
 ```mermaid
 flowchart TD
-    CH["Compatible DC charger"]
-    SW["Charge control / cutoff stage (TBD)"]
-    BAT["Battery (specification TBD)"]
-    SENSE["Required measurements (TBD)"]
-    CTRL["Cutoff decision logic (TBD)"]
-
-    CH -->|"Charging path"| SW
-    SW -->|"Charging path"| BAT
-    BAT -.->|"Measured signals"| SENSE
-    SENSE -.->|"Feedback"| CTRL
-    CTRL -.->|"Enable / inhibit request"| SW
+    A["5 V adapter"] -->|"Charging supply"| R["Relay contacts"]
+    R -->|"Switched supply"| P["Android phone"]
+    A -->|"Unswitched power via suitable regulation"| E["ESP32 board"]
+    P -.->|"BLE battery reports"| E
+    E -.->|"GPIO through relay module interface"| R
 ```
 
-Solid arrows show the conceptual charging path; dashed arrows show signals.
-This is a functional diagram, not a wiring schematic. The final design must
-resolve charger compatibility, sensing locations, ratings, and isolation needs.
+This is a functional diagram. Relay-module power, grounds, USB connector wiring, and the optional INA219 are omitted. The controller must remain powered after the phone's charging supply is disconnected.
 
-## Proposed cutoff and protection behavior
+## Proposed control behavior
 
-These are design targets to review and test after the hardware scope is chosen.
-
-| Condition | Intended response / unresolved detail |
+| Condition | Intended response |
 | --- | --- |
-| Startup or controller reset | Keep charging inhibited until required measurements and configuration are valid. |
-| Normal charging | Permit charging only while the defined operating conditions are satisfied. |
-| Charge-completion criterion reached | Request charging cutoff; the criterion must be chosen for the selected battery and charger. |
-| Invalid required measurement or detected out-of-limit condition | Request charging inhibition and record/indicate the reason if the selected design supports it. |
-| Restart after cutoff | Policy is undecided; define manual reset or automatic restart, including any hysteresis and delay, before implementation. |
+| Power-up or reset | Keep the phone's supply disconnected until the user starts a session and a valid battery report is received. |
+| Active session, fresh report below 100% | Permit charging. |
+| Fresh report reaches 100% | Disconnect charging and keep it off for that session. |
+| BLE disconnects | Disconnect charging and end the session. |
+| Battery reports become invalid or stale | Disconnect charging after a defined timeout and report a communication fault. |
+| User starts a new session | Require a fresh, valid report below 100% before enabling charging again. |
 
-There is no verified overvoltage, overcurrent, overtemperature, short-circuit,
-reverse-polarity, or failed-switch protection in this repository. Decide which
-protections are provided by the charger, battery protection circuit, or this
-controller and document their limits. A cutoff request alone is not evidence
-that charging current has stopped.
+The app would send updates when the percentage changes, plus a small periodic heartbeat so the ESP32 can detect missing reports. Heartbeat and timeout values remain to be selected and tested.
 
-## Repository layout
+A user-started Android foreground service is proposed for reporting while the screen is locked. Its behavior and power consumption must be measured on the chosen phone. Monitoring would stop when the session ends.
 
-| Location | Purpose |
+## Planned source areas
+
+| Folder | Intended contents |
 | --- | --- |
-| [firmware/](firmware/) | Future source code and build/flash instructions, if a microcontroller is used |
-| [schematics/](schematics/) | Future circuit sources, readable exports, wiring details, and component list |
-| [validation/](validation/) | Planned checks and future simulation or hardware evidence |
+| `android-app/` | Android application and build/install instructions |
+| `firmware/` | ESP32 firmware and configuration |
+| `schematics/` | Wiring, component details, and circuit exports |
+| `validation/` | Logs and clearly labelled simulation or hardware results |
 
-There is currently nothing to build, flash, or simulate.
+These are planned locations; this README update does not add those folders.
 
-## First implementation steps
+## First build and validation steps
 
-1. Choose the battery and compatible charger; document their limits and sources.
-2. Select sensing, decision logic, and cutoff hardware; define completion,
-   fault, startup, and restart behavior.
-3. Add the schematic and any required firmware with reproducible instructions.
-4. Run the checks in [validation/README.md](validation/README.md), label each
-   result as simulation or hardware, and update status only when evidence exists.
+1. Read and display the battery percentage in the Android app.
+2. Send real battery updates to the ESP32 over BLE and log the received values.
+3. Check cutoff decisions using simulated percentage reports and an indicator.
+4. Integrate the relay after confirming its input interface and power wiring.
+5. Verify cutoff current, reset behavior, lost connections, screen-locked operation, and app power consumption on hardware.
+
+Reported 100% is the control trigger. Overcurrent, overtemperature, and other battery-protection functions are not established by this design.
+
+## Technical references
+
+- [Android BatteryManager](https://developer.android.com/reference/android/os/BatteryManager)
+- [Android BLE overview](https://developer.android.com/develop/connectivity/bluetooth/ble/ble-overview)
+- [Android BLE background operation](https://developer.android.com/develop/connectivity/bluetooth/ble/background)
+- [ESP-IDF NimBLE](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/bluetooth/nimble/index.html)
