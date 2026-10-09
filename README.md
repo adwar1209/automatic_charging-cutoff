@@ -3,13 +3,6 @@
 A starting point for developing and validating a controller that stops battery
 charging when a defined charge-completion condition or fault is detected.
 
-## Current status
-
-**Documentation foundation only.** This repository contains no firmware,
-schematic, bill of materials, simulation model, or test results. Simulation
-success and a working hardware prototype have **not been demonstrated here**.
-Any work outside this repository is unverified.
-
 The diagram and behavior below describe a **proposed design**, not an
 implemented or tested system.
 
